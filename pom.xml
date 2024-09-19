@@ -73,6 +73,14 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Dependencia par el uso de Servlets -->
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>6.1.0</version>
+      <scope>provided</scope> <!-- Esto indica que el contenedor del servidor (como Tomcat, Jetty, o cualquier servidor de aplicaciones compatible con Jakarta EE) proporcionará esta dependencia en tiempo de ejecución. -->
+    </dependency>
+
   </dependencies>
   <build>
     <finalName>ticket-logger</finalName>
