@@ -1,0 +1,132 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.iesalixar.daw2.javiermorenosalas</groupId>
+  <artifactId>ticket-logger</artifactId>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>Javier Moreno Salas- Aplicación Web para el registro de tickets en compras de supermercado.</name>
+  <url>https://github.com/JavierMoren</url>
+  <dependencies>
+
+
+    <!-- JUnit es una de las bibliotecas más populares para realizar pruebas unitarias en proyectos Java. -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.11.0</version>
+      <scope>test</scope>
+    </dependency>
+
+
+    <!-- Mockito se utiliza para crear mocks en las pruebas unitarias, permitiendo simular el comportamiento de clases dependientes. -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.13.0</version>
+      <scope>test</scope>
+    </dependency>
+
+
+    <!-- SLF4J es una interfaz de logging que permite al desarrollador utilizar diferentes implementaciones de logging. Logback es una de las implementaciones más populares -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.16</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.5.8</version>
+    </dependency>
+
+
+    <!-- Jackson es una biblioteca muy utilizada para el manejo de JSON en Java. -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.17.2</version>
+    </dependency>
+
+
+    <!-- Apache Commons ofrece una colección de bibliotecas utilitarias que cubren operaciones comunes de String, IO, Collections, etc. -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.17.0</version>
+    </dependency>
+
+
+    <!-- Hibernate es un framework ORM popular que facilita la comunicación entre la aplicación Java y las bases de datos relacionales. -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.6.0.Final</version>
+    </dependency>
+
+
+    <!-- Lombok es una herramienta que ayuda a reducir la cantidad de código repetitivo (boilerplate) en Java, como getters y setters. -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.34</version>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+  <build>
+    <finalName>ticket-logger</finalName>
+    <plugins>
+      <!-- Plugin para compilación de código fuente -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <source>21</source> <!-- La versión de JDK que estamos usando -->
+          <target>21</target> <!-- La versión de JDK que estamos usando -->
+        </configuration>
+      </plugin>
+      <!-- Plugin para la generación de javadoc -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <source>21</source> <!-- La versión de JDK que estamos usando -->
+          <additionalJOption>-Xdoclint:none</additionalJOption> <!-- Opcional: Ignora los errores de JavaDoc -->
+          <encoding>UTF-8</encoding>
+          <docencoding>UTF-8</docencoding>
+          <charset>UTF-8</charset>
+          <show>private</show> <!-- Incluye métodos privados en la documentación -->
+          <noindex>false</noindex> <!-- Genera el índice de todos los elementos -->
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>javadoc</goal> <!-- El objetivo principal es generar JavaDoc -->
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Plugin de Servidor Jetty embebido -->
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>11.0.24</version> <!-- Versión compatible con Jakarta EE 9+ -->
+        <configuration>
+          <webApp>
+            <contextPath>/</contextPath>
+          </webApp>
+          <httpConnector>
+            <port>8080</port>
+          </httpConnector>
+          <!-- Configuración para la depuración remota -->
+          <jvmArgs>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:5005</jvmArgs>
+        </configuration>
+      </plugin>
+    </plugins>
+
+
+  </build>
+</project>
