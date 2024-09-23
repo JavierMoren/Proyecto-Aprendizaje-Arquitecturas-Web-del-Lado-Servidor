@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.iesalixar.daw2.javiermorenosalas</groupId>
-  <artifactId>ticket-logger</artifactId>
+  <artifactId>dwese-ticket-logger-servlet</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>Javier Moreno Salas- Aplicación Web para el registro de tickets en compras de supermercado.</name>
@@ -81,9 +81,32 @@
       <scope>provided</scope> <!-- Esto indica que el contenedor del servidor (como Tomcat, Jetty, o cualquier servidor de aplicaciones compatible con Jakarta EE) proporcionará esta dependencia en tiempo de ejecución. -->
     </dependency>
 
+    <!-- Dependencia par usar variables de entorno -->
+    <dependency>
+      <groupId>io.github.cdimascio</groupId>
+      <artifactId>dotenv-java</artifactId>
+      <version>3.0.2</version>
+    </dependency>
+
+    <!-- Dependencia par usar la base de datos MARIADB -->
+    <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+      <version>3.4.1</version>
+    </dependency>
+
+
   </dependencies>
   <build>
-    <finalName>ticket-logger</finalName>
+    <finalName>dwese-ticket-logger-servlet</finalName>
+    <!-- Se añade el fitering true para poder usar variables del pom.xml en tiempo de compilación -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
     <plugins>
       <!-- Plugin para compilación de código fuente -->
       <plugin>
@@ -134,7 +157,5 @@
         </configuration>
       </plugin>
     </plugins>
-
-
   </build>
 </project>
