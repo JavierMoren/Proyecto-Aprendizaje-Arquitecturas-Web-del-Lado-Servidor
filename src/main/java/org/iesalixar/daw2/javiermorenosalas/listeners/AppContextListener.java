@@ -4,8 +4,11 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import org.iesalixar.daw2.javiermorenosalas.dao.DatabaseConnectionManager;
+import org.iesalixar.daw2.javiermorenosalas.dao.DataInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.sql.Connection;
+import java.io.InputStream;
 
 
 /**
@@ -22,9 +25,29 @@ public class AppContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        // Iniciamos la conexión a la base de datos al arrancar la aplicación
         logger.info("Inicializando la aplicación y conectando a la base de datos...");
-        DatabaseConnectionManager.getConnection();
+
+
+        // Iniciamos la conexión a la base de datos al arrancar la aplicación
+        try (Connection connection = DatabaseConnectionManager.getConnection()) {
+            // Obtener el archivo data.sql desde el classpath
+            InputStream sqlFileStream = sce.getServletContext().getResourceAsStream("/WEB-INF/classes/data.sql");
+
+
+            if (sqlFileStream == null) {
+                logger.error("No se pudo encontrar el archivo data.sql en /WEB-INF/classes/");
+                return;
+            }
+
+
+            // Cargar los datos desde el archivo SQL
+            DataInitializer.loadDataFromSQL(sqlFileStream);
+            logger.info("Carga de datos finalizada.");
+
+
+        } catch (Exception e) {
+            logger.error("Error al inicializar la aplicación y cargar los datos: {}", e.getMessage(), e);
+        }
     }
 
 
@@ -35,4 +58,3 @@ public class AppContextListener implements ServletContextListener {
         DatabaseConnectionManager.closeConnection();
     }
 }
-
