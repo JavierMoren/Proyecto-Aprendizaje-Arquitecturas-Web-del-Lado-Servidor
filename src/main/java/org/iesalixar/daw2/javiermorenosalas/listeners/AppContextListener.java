@@ -31,6 +31,7 @@ public class AppContextListener implements ServletContextListener {
         // Iniciamos la conexión a la base de datos al arrancar la aplicación
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
             // Obtener el archivo data.sql desde el classpath
+            // El archivo esta direccionado a data.sql pero del target
             InputStream sqlFileStream = sce.getServletContext().getResourceAsStream("/WEB-INF/classes/data.sql");
 
 
