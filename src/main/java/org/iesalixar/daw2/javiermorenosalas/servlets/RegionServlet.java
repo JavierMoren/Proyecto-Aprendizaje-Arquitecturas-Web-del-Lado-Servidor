@@ -1,5 +1,6 @@
 package org.iesalixar.daw2.javiermorenosalas.servlets;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -258,10 +259,22 @@ public class RegionServlet extends HttpServlet {
      * @throws IOException en caso de error de E/S.
      */
     private void deleteRegion(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
+            throws SQLException, IOException, ServletException {
         int id = Integer.parseInt(request.getParameter("id"));
-        regionDAO.deleteRegion(id);  // Eliminar región usando el DAO
-        response.sendRedirect("regions"); // Redirigir al listado de regiones
+        try {
+            regionDAO.deleteRegion(id);  // Eliminar región usando el DAO
+            response.sendRedirect("regions"); // Redirigir al listado de regiones
+        } catch (SQLException e) {
+            // Manejo de la excepción de restricción de clave foránea
+            if (e.getSQLState().equals("23000")) { // Verifica si es un error de clave foránea
+                request.setAttribute("errorMessage", "No se puede eliminar la región porque está referenciada por una o más provincias.");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("region.jsp");
+                dispatcher.forward(request, response); // Redirigir a la vista con el mensaje de error
+            } else {
+                throw e; // Lanza otra excepción si no es de clave foránea
+            }
+        }
     }
+
 }
 
