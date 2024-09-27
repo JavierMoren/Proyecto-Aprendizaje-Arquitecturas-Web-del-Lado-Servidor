@@ -96,7 +96,6 @@
             <version>3.4.1</version>
         </dependency>
 
-
     </dependencies>
     <build>
         <finalName>dwese-ticket-logger-servlet</finalName>

@@ -2,12 +2,20 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<h1><c:out value="${Province == null ? fmt:message(key='msg.province-form.add') : fmt:message(key='msg.province-form.edit')}" /></h1>
+<h1>
+    <c:choose>
+        <c:when test="${Province == null}">
+            <fmt:message key="msg.province-form.add" />
+        </c:when>
+        <c:otherwise>
+            <fmt:message key="msg.province-form.edit" />
+        </c:otherwise>
+    </c:choose>
+</h1>
 
 <c:if test="${not empty errorMessage}">
     <div class="error-message">${errorMessage}</div>
 </c:if>
-
 
 <form action="provinces" method="post" style="display:inline;">
     <input type="hidden" name="id" value="${Province != null ? Province.id : ''}" />
@@ -19,7 +27,10 @@
     <label for="name"><fmt:message key="msg.province-form.name" />:</label>
     <input type="text" name="name" id="name" value="${Province != null ? Province.name : ''}" required />
 
-    <input type="submit" value="${Province == null ? fmt:message(key='msg.province-form.create') : fmt:message(key='msg.province-form.update')}" />
+    <label for="id_region"><fmt:message key="msg.province-form.id_region" />:</label>
+    <input type="text" name="id_region" id="id_region" value="${Province != null ? Province.id_region : ''}" required />
+
+    <input type="submit" value="<c:choose><c:when test='${Province == null}'><fmt:message key='msg.province-form.create' /></c:when><c:otherwise><fmt:message key='msg.province-form.update' /></c:otherwise></c:choose>" />
 </form>
 
 <a href="provinces"><fmt:message key="msg.province-form.returnback" /></a>
