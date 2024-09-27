@@ -10,6 +10,7 @@
             <th><fmt:message key="msg.province.id" /></th>
             <th><fmt:message key="msg.province.code" /></th>
             <th><fmt:message key="msg.province.name" /></th>
+            <th><fmt:message key="msg.province.id_region" /></th>
             <th><fmt:message key="msg.province.actions" /></th>
         </tr>
     </thead>
@@ -19,6 +20,7 @@
                 <td>${province.id}</td>
                 <td>${province.code}</td>
                 <td>${province.name}</td>
+                <td>${province.region.id}</td>
                 <td>
                     <a href="provinces?action=edit&id=${province.id}"><fmt:message key="msg.province.edit" /></a>
                     <form action="provinces" method="post" style="display:inline;">
