@@ -8,6 +8,7 @@
     <div class="error-message">${errorMessage}</div>
 </c:if>
 
+
 <form action="provinces" method="post" style="display:inline;">
     <input type="hidden" name="id" value="${Province != null ? Province.id : ''}" />
     <input type="hidden" name="action" value="${Province == null ? 'insert' : 'update'}" />
