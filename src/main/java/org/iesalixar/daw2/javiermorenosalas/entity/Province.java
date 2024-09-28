@@ -40,9 +40,12 @@ public class Province {
      *
      * @param code Código de la provincia.
      * @param name Nombre de la provincia.
+     * @param region Objeto región
      */
-    public Province(String code, String name) {
+    // Constructor sin ID (para insertar una nueva provincia)
+    public Province(String code, String name, Region region) {
         this.code = code;
         this.name = name;
+        this.region = region;
     }
 }

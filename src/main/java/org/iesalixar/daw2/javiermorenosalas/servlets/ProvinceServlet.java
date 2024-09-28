@@ -181,24 +181,22 @@ public class ProvinceServlet extends HttpServlet {
      */
     private void insertProvince(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        int id = Integer.parseInt(request.getParameter("id"));
+
+        // Sólo intenta obtener el 'id' si está presente, ya que en la creación no es necesario
+        String idStr = request.getParameter("id");  // Este valor será nulo o vacío en la creación
         String code = request.getParameter("code").trim().toUpperCase();
         String name = request.getParameter("name").trim();
-        int regionId = Integer.parseInt(request.getParameter("regionId"));
+        String regionIdStr = request.getParameter("id_region");
 
-        // Validaciones básicas
-        if (code.isEmpty() || name.isEmpty()) {
-            request.setAttribute("errorMessage", "El código y el nombre de la provincia no pueden estar vacíos.");
+        // Verificar que los campos obligatorios estén presentes
+        if (code.isEmpty() || name.isEmpty() || regionIdStr.isEmpty()) {
+            request.setAttribute("errorMessage", "El código, el nombre y el id de la región no pueden estar vacíos.");
             request.getRequestDispatcher("province-form.jsp").forward(request, response);
             return;
         }
 
-        // Validar si el código ya existe
-        if (provinceDAO.existsProvinceByCode(code)) {
-            request.setAttribute("errorMessage", "El código de la provincia ya existe.");
-            request.getRequestDispatcher("province-form.jsp").forward(request, response);
-            return;
-        }
+        // Convertir los valores necesarios a enteros
+        int regionId = Integer.parseInt(regionIdStr);
 
         // Verificar si la región existe
         Region region = regionDAO.getRegionById(regionId);
@@ -209,8 +207,9 @@ public class ProvinceServlet extends HttpServlet {
         }
 
         // Crear nueva provincia y asociarla a la región
-        Province newProvince = new Province(id,code, name, region);
+        Province newProvince = new Province(code, name, region);  // No se necesita 'id' aquí
         provinceDAO.insertProvince(newProvince);
+
         response.sendRedirect("provinces");
     }
 
@@ -225,29 +224,43 @@ public class ProvinceServlet extends HttpServlet {
      */
     private void updateProvince(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        int id = Integer.parseInt(request.getParameter("id"));
+
+        // Aquí el 'id' es obligatorio, ya que estás actualizando una provincia existente
+        String idStr = request.getParameter("id");
+        if (idStr == null || idStr.isEmpty()) {
+            request.setAttribute("errorMessage", "El ID de la provincia es obligatorio para la actualización.");
+            request.getRequestDispatcher("province-form.jsp").forward(request, response);
+            return;
+        }
+
+        int id = Integer.parseInt(idStr);
         String code = request.getParameter("code").trim().toUpperCase();
         String name = request.getParameter("name").trim();
-        int regionId = Integer.parseInt(request.getParameter("regionId"));
+        String regionIdStr = request.getParameter("id_region");
 
-        // Validaciones para la provincia
-        if (code.isEmpty() || name.isEmpty()) {
-            request.setAttribute("errorMessage", "El código y el nombre de la provincia no pueden estar vacíos.");
+        if (code.isEmpty() || name.isEmpty() || regionIdStr.isEmpty()) {
+            request.setAttribute("errorMessage", "El código, el nombre y el id de la región no pueden estar vacíos.");
             request.getRequestDispatcher("province-form.jsp").forward(request, response);
             return;
         }
 
-        // Validar si el código ya existe para otra provincia
-        if (provinceDAO.existsProvinceByCodeAndNotId(code, id)) {
-            request.setAttribute("errorMessage", "El código de la provincia ya existe.");
+        int regionId = Integer.parseInt(regionIdStr);
+
+        // Verificar si la región existe
+        Region region = regionDAO.getRegionById(regionId);
+        if (region == null) {
+            request.setAttribute("errorMessage", "La región seleccionada no existe.");
             request.getRequestDispatcher("province-form.jsp").forward(request, response);
             return;
         }
 
-        Province updatedProvince = new Province(id, code, name, regionDAO.getRegionById(regionId));
+        // Actualizar la provincia
+        Province updatedProvince = new Province(id, code, name, region);
         provinceDAO.updateProvince(updatedProvince);
+
         response.sendRedirect("provinces");
     }
+
 
     /**
      * Elimina una provincia de la base de datos.
