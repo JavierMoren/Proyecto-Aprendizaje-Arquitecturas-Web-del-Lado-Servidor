@@ -2,13 +2,16 @@ package org.iesalixar.daw2.javiermorenosalas.dao;
 
 import org.iesalixar.daw2.javiermorenosalas.entity.Province;
 import org.iesalixar.daw2.javiermorenosalas.entity.Region;
-import org.iesalixar.daw2.javiermorenosalas.dao.RegionDAOImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProvinceDAOImpl implements ProvinceDAO {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProvinceDAOImpl.class);
 
     /**
      * Lista todas las provincias de la base de datos.
@@ -19,7 +22,9 @@ public class ProvinceDAOImpl implements ProvinceDAO {
     public List<Province> listAllProvinces() throws SQLException {
         List<Province> Provinces = new ArrayList<>();
         String query = "SELECT * FROM provinces p INNER JOIN regions r on r.id = p.id_region";
-        // Lo que he hecho aqui ha sido hacer una consulta completa para poder sacar cada dato y poder introducirlo en un region
+
+        // Registramos el inicio del metodo
+        logger.info("Inicio de listAllProvinces: Ejecutando consulta para listar todas las provincias y regiones");
 
         // Obtener una nueva conexión para cada operación
         try (Connection connection = DatabaseConnectionManager.getConnection();
@@ -37,7 +42,16 @@ public class ProvinceDAOImpl implements ProvinceDAO {
                 Region region = new Region(reg_id, reg_code, reg_name);
                 Provinces.add(new Province(prov_id, prov_code, prov_name, region));
             }
+            // Registramos la cantidad de provincias obtenidas
+            logger.info("Consulta ejecutada con éxito");
+
+        } catch (SQLException e) {
+            // Si ocurre una excepción, registramos el error
+            logger.error("Error al ejecutar la consulta para obtener provincias: {}", e.getMessage(), e);
+            throw e;
         }
+        // Registramos la finalización del metodo
+        logger.info("Finalización de listAllProvinces.");
         return Provinces;
     }
 
@@ -48,6 +62,8 @@ public class ProvinceDAOImpl implements ProvinceDAO {
      */
     public void insertProvince(Province province) throws SQLException {
         String query = "INSERT INTO provinces (code, name, id_region) VALUES (?, ?, ?)";
+
+        logger.info("Inicio de insertProvince: Ejecutando consulta para insertar provincias");
 
         try (Connection connection = DatabaseConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -62,7 +78,13 @@ public class ProvinceDAOImpl implements ProvinceDAO {
 
             // Ejecutar la consulta
             preparedStatement.executeUpdate();
+
+            logger.info("Consulta ejecutada con exito");
+        } catch (SQLException e) {
+            logger.error("Error al ejecutar la consulta para insertar provincias: {}", e.getMessage(), e);
+            throw e;
         }
+        logger.info("Finalizacion de insertProvince");
     }
 
     /**
@@ -72,6 +94,8 @@ public class ProvinceDAOImpl implements ProvinceDAO {
      */
     public void updateProvince(Province province) throws SQLException {
         String query = "UPDATE provinces SET code = ?, name = ?, id_region = ? WHERE id = ?";
+
+        logger.info("Inicio de updateProvince: Ejecutando consulta para actualizar provincias");
 
         try (Connection connection = DatabaseConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -87,7 +111,12 @@ public class ProvinceDAOImpl implements ProvinceDAO {
 
             // Ejecutar la consulta
             preparedStatement.executeUpdate();
+            logger.info("Consulta ejecutada con exito");
+        } catch (SQLException e) {
+            logger.error("Error al ejecutar la consulta para actualizar provincias: {}", e.getMessage(), e);
+            throw e;
         }
+        logger.info("Finalizacion de updateProvince");
     }
 
     /**
@@ -97,12 +126,21 @@ public class ProvinceDAOImpl implements ProvinceDAO {
      */
     public void deleteProvince(int id) throws SQLException {
         String query = "DELETE FROM provinces WHERE id = ?";
+
+        logger.info("Inicio de deleteProvince: Ejecutando consulta para eliminar la provincia con ID {}", id);
+
         try (Connection connection = DatabaseConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
+
+            logger.info("Provincia con ID {} eliminada con éxito", id);
+        } catch (SQLException e) {
+            logger.error("Error al eliminar la provincia con ID {}: {}", id, e.getMessage(), e);
+            throw e;
         }
+        logger.info("Finalización de deleteProvince");
     }
 
     /**
@@ -114,6 +152,8 @@ public class ProvinceDAOImpl implements ProvinceDAO {
     public Province getProvinceById(int id) throws SQLException {
         String query = "SELECT * FROM provinces p INNER JOIN regions r on r.id = p.id_region WHERE p.id = ?";
         Province Province = null;
+
+        logger.info("Inicio de getProvinceById: Ejecutando consulta para obtener provincia con ID {}", id);
 
         try (Connection connection = DatabaseConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -128,8 +168,15 @@ public class ProvinceDAOImpl implements ProvinceDAO {
                 Region region = new Region(id_region, code, name);
 
                 Province = new Province(id, code, name, region);
+                logger.info("Provincia con ID {} encontrada: {}", id, Province);
+            } else {
+                logger.warn("No se encontró ninguna provincia con ID {}", id);
             }
+        } catch (SQLException e) {
+            logger.error("Error al obtener la provincia con ID {}: {}", id, e.getMessage(), e);
+            throw e;
         }
+        logger.info("Finalización de getProvinceById");
         return Province;
     }
 
@@ -143,13 +190,24 @@ public class ProvinceDAOImpl implements ProvinceDAO {
     @Override
     public boolean existsProvinceByCode(String code) throws SQLException {
         String sql = "SELECT COUNT(*) FROM provinces WHERE UPPER(code) = ?";
-        try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(sql);
+
+        logger.info("Inicio de existsProvinceByCode: Verificando si existe provincia con código {}", code);
+
+        try (Connection connection = DatabaseConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
             statement.setString(1, code.toUpperCase());
+
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
-                return resultSet.getInt(1) > 0;
+                boolean exists = resultSet.getInt(1) > 0;
+
+                logger.info("Verificación de existencia de provincia con código {}: {}", code, exists);
+                return exists;
             }
+        } catch (SQLException e) {
+            logger.error("Error al verificar si existe provincia con código {}: {}", code, e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -164,14 +222,25 @@ public class ProvinceDAOImpl implements ProvinceDAO {
     @Override
     public boolean existsProvinceByCodeAndNotId(String code, int id) throws SQLException {
         String sql = "SELECT COUNT(*) FROM provinces WHERE UPPER(code) = ? AND id != ?";
-        try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(sql);
+
+        logger.info("Inicio de existsProvinceByCodeAndNotId: Verificando si existe provincia con código {} excluyendo ID {}", code, id);
+
+        try (Connection connection = DatabaseConnectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
             statement.setString(1, code.toUpperCase());
             statement.setInt(2, id);
+
             try (ResultSet resultSet = statement.executeQuery()) {
                 resultSet.next();
-                return resultSet.getInt(1) > 0;
+                boolean exists = resultSet.getInt(1) > 0;
+
+                logger.info("Verificación de existencia de provincia con código {} excluyendo ID {}: {}", code, id, exists);
+                return exists;
             }
+        } catch (SQLException e) {
+            logger.error("Error al verificar si existe provincia con código {} excluyendo ID {}: {}", code, id, e.getMessage(), e);
+            throw e;
         }
     }
 
