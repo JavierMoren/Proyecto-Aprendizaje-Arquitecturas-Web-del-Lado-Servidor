@@ -165,10 +165,16 @@ public class ProvinceServlet extends HttpServlet {
      * @throws IOException en caso de error de entrada/salida.
      */
     private void showNewForm(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        logger.info("Mostrando formulario para nueva provincia.");
+            throws ServletException, IOException, SQLException {
+        // Obtener todas las regiones
+        List<Region> listRegions = regionDAO.listAllRegions();
+        // Pasar la lista de regiones a la vista
+        request.setAttribute("listRegions", listRegions);
+
+        // Mostrar el formulario para crear una nueva provincia
         request.getRequestDispatcher("province-form.jsp").forward(request, response);
     }
+
 
     /**
      * Muestra el formulario para editar una provincia existente.
@@ -182,11 +188,21 @@ public class ProvinceServlet extends HttpServlet {
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        Province existingProvince = provinceDAO.getProvinceById(id);  // Obtener provincia por ID
-        request.setAttribute("province", existingProvince);  // Pasar la provincia a la vista
-        logger.info("Mostrando formulario para editar provincia con ID: {}", id);
+
+        // Obtener la provincia existente por su ID
+        Province existingProvince = provinceDAO.getProvinceById(id);
+
+        // Obtener todas las regiones
+        List<Region> listRegions = regionDAO.listAllRegions();
+
+        // Pasar la provincia y la lista de regiones a la vista
+        request.setAttribute("province", existingProvince);
+        request.setAttribute("listRegions", listRegions);
+
+        // Mostrar el formulario para editar la provincia
         request.getRequestDispatcher("province-form.jsp").forward(request, response);
     }
+
 
     /**
      * Inserta una nueva provincia en la base de datos tras validar los datos del formulario.
