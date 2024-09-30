@@ -7,14 +7,8 @@
 <!-- Muestra el mensaje de error si existe -->
 <c:if test="${not empty errorMessage}">
     <div style="color: red;">
-        <strong>Error:</strong> ${errorMessage}
+        <strong><fmt:message key="msg.region.error" />: <fmt:message key="msg.region.error.foreignkey" /> </strong>
     </div>
-    <hr/>
-    <!-- Botón para volver al listado -->
-    <form action="regions" method="get">
-        <input type="submit" value="Volver al listado" />
-    </form>
-    <hr/> <!-- Separador opcional -->
 </c:if>
 
 <!-- Muestra la lista de regiones solo si no hay error -->

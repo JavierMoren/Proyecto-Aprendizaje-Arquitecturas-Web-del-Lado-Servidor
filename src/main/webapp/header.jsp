@@ -20,3 +20,4 @@
        <option value="es" ${sessionScope.locale.language == 'es' ? 'selected' : ''}>Español</option>
    </select>
 </form>
+<hr/>
