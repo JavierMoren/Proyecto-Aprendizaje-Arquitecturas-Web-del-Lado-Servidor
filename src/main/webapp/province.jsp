@@ -15,7 +15,7 @@
         </tr>
     </thead>
     <tbody>
-        <c:forEach var="province" items="${listProvinces}"> <!-- Cambié 'Province' a 'province' para seguir convenciones -->
+        <c:forEach var="province" items="${listProvinces}"> 
             <tr>
                 <td>${province.id}</td>
                 <td>${province.code}</td>
