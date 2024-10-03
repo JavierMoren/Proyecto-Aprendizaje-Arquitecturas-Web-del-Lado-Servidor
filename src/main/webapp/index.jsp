@@ -16,6 +16,11 @@
             <fmt:message key="msg.region.title" />
         </button>
     </form>
+    <form action="supermarkets" method="get">
+        <button type="submit">
+             <fmt:message key="msg.supermarket.title" />
+        </button>
+    </form>
 </div>
 
 <%@ include file="footer.jsp" %>

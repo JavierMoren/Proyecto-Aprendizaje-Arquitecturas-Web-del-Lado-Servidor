@@ -25,6 +25,4 @@
     <input type="submit" value="<fmt:message key='${submitLabel}' />" />
 </form>
 
-<a href="regions"><fmt:message key="msg.region-form.returnback" /></a>
-
 <%@ include file="footer.jsp" %>

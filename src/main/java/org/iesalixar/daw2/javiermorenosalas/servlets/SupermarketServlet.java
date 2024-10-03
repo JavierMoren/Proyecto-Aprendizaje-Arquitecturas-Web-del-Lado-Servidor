@@ -120,8 +120,8 @@ public class SupermarketServlet extends HttpServlet {
      */
     private void listSupermarket(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        List<Supermarket> listSupermarkets = supermarketDAO.listAllSupermarkets();
-        request.setAttribute("listSupermarkets", listSupermarkets);
+        List<Supermarket> listSupermarket = supermarketDAO.listAllSupermarkets();
+        request.setAttribute("listSupermarket", listSupermarket);
         request.getRequestDispatcher("supermarket.jsp").forward(request, response);
         logger.info("Listando todas los supermercados.");
     }
@@ -188,7 +188,7 @@ public class SupermarketServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        response.sendRedirect("supermarket"); // Redirigir al listado de regiones
+        response.sendRedirect("supermarkets"); // Redirigir al listado de regiones
     }
 
     /**
@@ -223,7 +223,7 @@ public class SupermarketServlet extends HttpServlet {
             logger.error("Error al actualizar Supermarket", e); // Logueo de error
             throw e;
         }
-        response.sendRedirect("supermarket"); // Redirigir al listado de regiones
+        response.sendRedirect("supermarkets"); // Redirigir al listado de regiones url
     }
 
     /**
@@ -241,7 +241,7 @@ public class SupermarketServlet extends HttpServlet {
         try {
             supermarketDAO.deleteSupermarket(id);
             logger.info("Supermarket eliminada con ID: {}", id); // Logueo de éxito
-            response.sendRedirect("supermarket");
+            response.sendRedirect("supermarkets");
         } catch (SQLException e) {
             // Manejo de la excepción de restricción de clave foránea
             if (e.getSQLState().equals("23000")) { // Verifica si es un error de clave foránea

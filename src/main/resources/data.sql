@@ -94,7 +94,7 @@ INSERT IGNORE INTO provinces (code, name, id_region) VALUES
 -- Crear tabla para los supermercados
 CREATE TABLE IF NOT EXISTS supermarket (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL UNIQUE
 );
 
 INSERT IGNORE INTO supermarket (name) VALUES
