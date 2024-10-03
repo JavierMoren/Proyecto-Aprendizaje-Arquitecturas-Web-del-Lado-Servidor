@@ -20,7 +20,7 @@ public class SupermarketDAOImpl implements SupermarketDAO {
      */
     public List<Supermarket> listAllSupermarkets() throws SQLException {
         List<Supermarket> supermarkets = new ArrayList<>();
-        String query = "SELECT * FROM supermarket";
+        String query = "SELECT * FROM supermarkets";
 
         logger.info("Inicio de listAllSupermarkets: Ejecutando consulta para listar todas los supermercados");
 
@@ -48,7 +48,7 @@ public class SupermarketDAOImpl implements SupermarketDAO {
      * @throws SQLException
      */
     public void insertSupermarket(Supermarket supermarket) throws SQLException {
-        String query = "INSERT INTO supermarket (name) VALUES (?)";
+        String query = "INSERT INTO supermarkets (name) VALUES (?)";
 
         logger.info("Inicio de insertSupermarket: Ejecutando consulta para insertar supermarket {}", supermarket);
 
@@ -71,7 +71,7 @@ public class SupermarketDAOImpl implements SupermarketDAO {
      * @throws SQLException
      */
     public void updateSupermarket(Supermarket supermarket) throws SQLException {
-        String query = "UPDATE supermarket SET name = ? WHERE id = ?";
+        String query = "UPDATE supermarkets SET name = ? WHERE id = ?";
 
         logger.info("Inicio de updateSupermarket: Ejecutando consulta para actualizar supermarket {}", supermarket);
 
@@ -95,7 +95,7 @@ public class SupermarketDAOImpl implements SupermarketDAO {
      * @throws SQLException
      */
     public void deleteSupermarket(int id) throws SQLException {
-        String query = "DELETE FROM supermarket WHERE id = ?";
+        String query = "DELETE FROM supermarkets WHERE id = ?";
 
         logger.info("Inicio de deleteSupermarket: Ejecutando consulta para eliminar supermarket con ID {}", id);
 
@@ -119,7 +119,7 @@ public class SupermarketDAOImpl implements SupermarketDAO {
      * @throws SQLException
      */
     public Supermarket getSupermarketById(int id) throws SQLException {
-        String query = "SELECT * FROM supermarket WHERE id = ?";
+        String query = "SELECT * FROM supermarkets WHERE id = ?";
         Supermarket supermarket = null;
 
         logger.info("Inicio de getSupermarketById: Ejecutando consulta para obtener supermarket con ID {}", id);

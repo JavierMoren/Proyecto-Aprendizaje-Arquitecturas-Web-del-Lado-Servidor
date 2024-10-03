@@ -92,15 +92,41 @@ INSERT IGNORE INTO provinces (code, name, id_region) VALUES
 ('52', 'Melilla', 18);
 
 -- Crear tabla para los supermercados
-CREATE TABLE IF NOT EXISTS supermarket (
+CREATE TABLE IF NOT EXISTS supermarkets (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE
 );
 
-INSERT IGNORE INTO supermarket (name) VALUES
+INSERT IGNORE INTO supermarkets (name) VALUES
 ("Mercadona"),
 ("DIA"),
 ("Carrefour"),
 ("LIDL");
+
+-- Creación de la tabla location
+CREATE TABLE IF NOT EXISTS locations (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    address VARCHAR(255) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    supermarket_id INT,
+    province_id INT,
+    FOREIGN KEY (supermarket_id) REFERENCES supermarkets(id),
+    FOREIGN KEY (province_id) REFERENCES provinces(id)
+);
+
+-- Inserción de datos en la tabla location
+INSERT IGNORE INTO locations (id, address, city, supermarket_id, province_id)
+VALUES
+(1,'Calle Mayor 15', 'Madrid', 1, 1),
+(2,'Avenida de América 22', 'Barcelona', 2, 2),
+(3,'Plaza de España 5', 'Sevilla', 3, 3),
+(4,'Calle Gran Vía 48', 'Bilbao', 4, 4),
+(5,'Calle de la Paz 10', 'Valencia', 5, 5),
+(6,'Avenida de los Reyes 30', 'Zaragoza', 6, 6),
+(7,'Paseo de la Castellana 75', 'Madrid', 1, 1),
+(8,'Calle del Mar 18', 'Alicante', 7, 7),
+(9,'Rambla de Cataluña 14', 'Barcelona', 2, 2),
+(10,'Calle San Fernando 33', 'Córdoba', 8, 8);
+
 
 
