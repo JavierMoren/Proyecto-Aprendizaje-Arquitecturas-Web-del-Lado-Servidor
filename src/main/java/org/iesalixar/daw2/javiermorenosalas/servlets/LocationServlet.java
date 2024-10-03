@@ -14,25 +14,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Servlet que maneja las operaciones CRUD para la entidad `Location`.
- * Este servlet responde a las solicitudes relacionadas con la gestión de ubicaciones
- * y utiliza los DAOs (`LocationDAO`, `SupermarketDAO`, `ProvinceDAO`) para interactuar con la base de datos.
- *
- * Las principales funcionalidades que cubre este servlet incluyen:
- * - Listar las ubicaciones.
- * - Insertar una nueva ubicación.
- * - Actualizar una ubicación existente.
- * - Eliminar una ubicación.
- *
- * Este servlet está mapeado en la URL `/locations`.
- */
 @WebServlet("/locations")
 public class LocationServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(LocationServlet.class);
 
-    // DAOs para gestionar las operaciones de las ubicaciones, supermercados y provincias
+    // DAOs para gestionar las operaciones de ubicaciones, supermercados y provincias
     private LocationDAO locationDAO;
     private SupermarketDAO supermarketDAO;
     private ProvinceDAO provinceDAO;
@@ -53,6 +40,11 @@ public class LocationServlet extends HttpServlet {
     /**
      * Maneja las solicitudes HTTP GET. Según el parámetro "action" recibido en la solicitud,
      * se invoca el método correspondiente (listar, mostrar formulario de edición o creación).
+     *
+     * @param request La solicitud HTTP recibida.
+     * @param response La respuesta HTTP a enviar.
+     * @throws ServletException Si ocurre un error en la solicitud.
+     * @throws IOException Si ocurre un error en la lectura o escritura de la solicitud.
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -68,13 +60,16 @@ public class LocationServlet extends HttpServlet {
 
             switch (action) {
                 case "new":
-                    showNewForm(request, response);  // Mostrar formulario para nueva ubicación
+                    logger.info("Accion: mostrar formulario de nueva ubicacion.");
+                    showNewForm(request, response);  // Mostrar formulario para nueva ubicacion
                     break;
                 case "edit":
-                    showEditForm(request, response);  // Mostrar formulario para editar ubicación
+                    logger.info("Accion: mostrar formulario de edicion de ubicacion.");
+                    showEditForm(request, response);  // Mostrar formulario para editar ubicacion
                     break;
                 default:
-                    listLocations(request, response);  // Listar todas las ubicaciones
+                    logger.info("Accion: listar ubicaciones.");
+                    listLocations(request, response);  // Listar ubicaciones
                     break;
             }
         } catch (SQLException ex) {
@@ -86,6 +81,11 @@ public class LocationServlet extends HttpServlet {
     /**
      * Maneja las solicitudes HTTP POST. Según el parámetro "action", decide si insertar,
      * actualizar o eliminar una ubicación.
+     *
+     * @param request La solicitud HTTP recibida.
+     * @param response La respuesta HTTP a enviar.
+     * @throws ServletException Si ocurre un error en la solicitud.
+     * @throws IOException Si ocurre un error en la lectura o escritura de la solicitud.
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -95,16 +95,20 @@ public class LocationServlet extends HttpServlet {
         try {
             switch (action) {
                 case "insert":
-                    insertLocation(request, response);  // Insertar nueva ubicación
+                    logger.info("Accion: insertar nueva ubicacion.");
+                    insertLocation(request, response);  // Insertar nueva ubicacion
                     break;
                 case "update":
-                    updateLocation(request, response);  // Actualizar ubicación existente
+                    logger.info("Accion: actualizar ubicacion.");
+                    updateLocation(request, response);  // Actualizar ubicacion existente
                     break;
                 case "delete":
-                    deleteLocation(request, response);  // Eliminar ubicación
+                    logger.info("Accion: eliminar ubicacion.");
+                    deleteLocation(request, response);  // Eliminar ubicacion
                     break;
                 default:
-                    listLocations(request, response);  // Listar todas las ubicaciones
+                    logger.info("Accion no reconocida, listando ubicaciones.");
+                    listLocations(request, response);  // Listar ubicaciones
                     break;
             }
         } catch (SQLException ex) {
@@ -115,6 +119,12 @@ public class LocationServlet extends HttpServlet {
 
     /**
      * Lista todas las ubicaciones y las pasa como atributo a la vista `location.jsp`.
+     *
+     * @param request La solicitud HTTP recibida.
+     * @param response La respuesta HTTP a enviar.
+     * @throws SQLException Si ocurre un error en la consulta de la base de datos.
+     * @throws IOException Si ocurre un error en la lectura o escritura de la solicitud.
+     * @throws ServletException Si ocurre un error al procesar la solicitud.
      */
     private void listLocations(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
@@ -126,46 +136,58 @@ public class LocationServlet extends HttpServlet {
 
     /**
      * Muestra el formulario para crear una nueva ubicación.
+     *
+     * @param request La solicitud HTTP recibida.
+     * @param response La respuesta HTTP a enviar.
+     * @throws ServletException Si ocurre un error en la solicitud.
+     * @throws IOException Si ocurre un error en la lectura o escritura de la solicitud.
+     * @throws SQLException Si ocurre un error al obtener los datos necesarios de la base de datos.
      */
     private void showNewForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
-        // Obtener todos los supermercados y provincias
         List<Supermarket> listSupermarkets = supermarketDAO.listAllSupermarkets();
         List<Province> listProvinces = provinceDAO.listAllProvinces();
 
-        // Pasar la lista de supermercados y provincias a la vista
         request.setAttribute("listSupermarkets", listSupermarkets);
         request.setAttribute("listProvinces", listProvinces);
 
-        // Mostrar el formulario para crear una nueva ubicación
+        logger.info("Mostrando formulario de nueva ubicacion.");
         request.getRequestDispatcher("location-form.jsp").forward(request, response);
     }
 
     /**
      * Muestra el formulario para editar una ubicación existente.
+     *
+     * @param request La solicitud HTTP recibida.
+     * @param response La respuesta HTTP a enviar.
+     * @throws SQLException Si ocurre un error al obtener la ubicación de la base de datos.
+     * @throws ServletException Si ocurre un error en la solicitud.
+     * @throws IOException Si ocurre un error en la lectura o escritura de la solicitud.
      */
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
 
-        // Obtener la ubicación existente por su ID
         Location existingLocation = locationDAO.getLocationById(id);
-
-        // Obtener todos los supermercados y provincias
         List<Supermarket> listSupermarkets = supermarketDAO.listAllSupermarkets();
         List<Province> listProvinces = provinceDAO.listAllProvinces();
 
-        // Pasar la ubicación, supermercados y provincias a la vista
         request.setAttribute("location", existingLocation);
         request.setAttribute("listSupermarkets", listSupermarkets);
         request.setAttribute("listProvinces", listProvinces);
 
-        // Mostrar el formulario para editar la ubicación
+        logger.info("Mostrando formulario de edicion para la ubicacion con ID: {}", id);
         request.getRequestDispatcher("location-form.jsp").forward(request, response);
     }
 
     /**
      * Inserta una nueva ubicación en la base de datos.
+     *
+     * @param request La solicitud HTTP recibida.
+     * @param response La respuesta HTTP a enviar.
+     * @throws SQLException Si ocurre un error al insertar la ubicación en la base de datos.
+     * @throws IOException Si ocurre un error en la lectura o escritura de la solicitud.
+     * @throws ServletException Si ocurre un error en la solicitud.
      */
     private void insertLocation(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
@@ -175,7 +197,6 @@ public class LocationServlet extends HttpServlet {
         String supermarketIdStr = request.getParameter("supermarket_id");
         String provinceIdStr = request.getParameter("province_id");
 
-        // Verificar que los campos obligatorios estén presentes
         if (address.isEmpty() || city.isEmpty() || supermarketIdStr.isEmpty() || provinceIdStr.isEmpty()) {
             logger.warn("Intento de insertar ubicación fallido: campos vacíos.");
             request.setAttribute("errorMessage", "La dirección, ciudad, supermercado y provincia no pueden estar vacíos.");
@@ -183,11 +204,9 @@ public class LocationServlet extends HttpServlet {
             return;
         }
 
-        // Convertir los valores a enteros
         int supermarketId = Integer.parseInt(supermarketIdStr);
         int provinceId = Integer.parseInt(provinceIdStr);
 
-        // Verificar si el supermercado y la provincia existen
         Supermarket supermarket = supermarketDAO.getSupermarketById(supermarketId);
         Province province = provinceDAO.getProvinceById(provinceId);
 
@@ -198,7 +217,6 @@ public class LocationServlet extends HttpServlet {
             return;
         }
 
-        // Crear nueva ubicación y asociarla a supermercado y provincia
         Location newLocation = new Location(address, city, supermarket, province);
         locationDAO.insertLocation(newLocation);
         logger.info("Ubicación insertada: {} - {}", address, city);
@@ -208,6 +226,12 @@ public class LocationServlet extends HttpServlet {
 
     /**
      * Actualiza una ubicación existente en la base de datos.
+     *
+     * @param request La solicitud HTTP recibida.
+     * @param response La respuesta HTTP a enviar.
+     * @throws SQLException Si ocurre un error al actualizar la ubicación en la base de datos.
+     * @throws IOException Si ocurre un error en la lectura o escritura de la solicitud.
+     * @throws ServletException Si ocurre un error en la solicitud.
      */
     private void updateLocation(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
@@ -228,7 +252,6 @@ public class LocationServlet extends HttpServlet {
         int supermarketId = Integer.parseInt(supermarketIdStr);
         int provinceId = Integer.parseInt(provinceIdStr);
 
-        // Verificar si el supermercado y la provincia existen
         Supermarket supermarket = supermarketDAO.getSupermarketById(supermarketId);
         Province province = provinceDAO.getProvinceById(provinceId);
 
@@ -239,7 +262,6 @@ public class LocationServlet extends HttpServlet {
             return;
         }
 
-        // Actualizar la ubicación existente
         Location location = new Location(id, address, city, supermarket, province);
         locationDAO.updateLocation(location);
         logger.info("Ubicación actualizada: {} - {}", address, city);
@@ -249,6 +271,11 @@ public class LocationServlet extends HttpServlet {
 
     /**
      * Elimina una ubicación existente de la base de datos.
+     *
+     * @param request La solicitud HTTP recibida.
+     * @param response La respuesta HTTP a enviar.
+     * @throws SQLException Si ocurre un error al eliminar la ubicación de la base de datos.
+     * @throws IOException Si ocurre un error en la lectura o escritura de la solicitud.
      */
     private void deleteLocation(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
@@ -257,5 +284,4 @@ public class LocationServlet extends HttpServlet {
         logger.info("Ubicación eliminada: ID {}", id);
         response.sendRedirect("locations");
     }
-
 }

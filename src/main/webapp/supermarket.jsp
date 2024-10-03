@@ -7,7 +7,7 @@
 <!-- Muestra el mensaje de error si existe -->
 <c:if test="${not empty errorMessage}">
     <div style="color: red;">
-        <strong><fmt:message key="msg.region.error" />: <fmt:message key="msg.region.error.foreignkey" /> </strong>
+        <strong><fmt:message key="msg.supermarket.error" />: <fmt:message key="msg.supermarket.error.foreignkey" /> </strong>
     </div>
 </c:if>
 

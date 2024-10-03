@@ -16,7 +16,10 @@ public class LocationDAOImpl implements LocationDAO {
     private static final Logger logger = LoggerFactory.getLogger(LocationDAOImpl.class);
 
     /**
-     * Listar todas las ubicaciones con sus respectivas provincias y supermercados.
+     * Lista todas las ubicaciones con sus respectivas provincias y supermercados.
+     *
+     * @return Una lista de todas las ubicaciones encontradas.
+     * @throws SQLException Si ocurre un error en la consulta a la base de datos.
      */
     public List<Location> listAllLocations() throws SQLException {
         List<Location> locations = new ArrayList<>();
@@ -46,17 +49,20 @@ public class LocationDAOImpl implements LocationDAO {
                 Province province = new Province(provinceId, provinceCode, provinceName, null);
                 locations.add(new Location(locationId, address, city, supermarket, province));
             }
-            logger.info("Consulta ejecutada con éxito");
+            logger.info("Consulta ejecutada con exito");
         } catch (SQLException e) {
             logger.error("Error al ejecutar la consulta para obtener ubicaciones: {}", e.getMessage(), e);
             throw e;
         }
-        logger.info("Finalización de listAllLocations");
+        logger.info("Finalizacion de listAllLocations");
         return locations;
     }
 
     /**
-     * Inserta una nueva ubicación en la base de datos.
+     * Inserta una nueva ubicacion en la base de datos.
+     *
+     * @param location La ubicacion que se desea insertar.
+     * @throws SQLException Si ocurre un error en la consulta a la base de datos.
      */
     public void insertLocation(Location location) throws SQLException {
         String query = "INSERT INTO locations (address, city, supermarket_id, province_id) VALUES (?, ?, ?, ?)";
@@ -81,7 +87,10 @@ public class LocationDAOImpl implements LocationDAO {
     }
 
     /**
-     * Actualiza una ubicación existente en la base de datos.
+     * Actualiza una ubicacion existente en la base de datos.
+     *
+     * @param location La ubicacion con los nuevos datos.
+     * @throws SQLException Si ocurre un error en la consulta a la base de datos.
      */
     public void updateLocation(Location location) throws SQLException {
         String query = "UPDATE locations SET address = ?, city = ?, supermarket_id = ?, province_id = ? WHERE id = ?";
@@ -107,7 +116,10 @@ public class LocationDAOImpl implements LocationDAO {
     }
 
     /**
-     * Elimina una ubicación de la base de datos.
+     * Elimina una ubicacion de la base de datos.
+     *
+     * @param id El ID de la ubicacion a eliminar.
+     * @throws SQLException Si ocurre un error en la consulta a la base de datos.
      */
     public void deleteLocation(int id) throws SQLException {
         String query = "DELETE FROM locations WHERE id = ?";
@@ -120,7 +132,7 @@ public class LocationDAOImpl implements LocationDAO {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
 
-            logger.info("Ubicación con ID {} eliminada con exito", id);
+            logger.info("Ubicacion con ID {} eliminada con exito", id);
         } catch (SQLException e) {
             logger.error("Error al eliminar la ubicacion con ID {}: {}", id, e.getMessage(), e);
             throw e;
@@ -129,9 +141,10 @@ public class LocationDAOImpl implements LocationDAO {
     }
 
     /**
-     * Obtiene una ubicación por su ID de la base de datos.
-     * @param id ID de la ubicación a buscar.
-     * @return Un objeto Location si se encuentra la ubicación, o null si no se encuentra.
+     * Obtiene una ubicacion por su ID de la base de datos.
+     *
+     * @param id ID de la ubicacion a buscar.
+     * @return Un objeto Location si se encuentra la ubicacion, o null si no se encuentra.
      * @throws SQLException Si ocurre un error en la consulta a la base de datos.
      */
     public Location getLocationById(int id) throws SQLException {
@@ -152,7 +165,7 @@ public class LocationDAOImpl implements LocationDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                // Obtener los campos de la ubicación
+                // Obtener los campos de la ubicacion
                 String address = resultSet.getString("l.address");
                 String city = resultSet.getString("l.city");
                 int supermarketId = resultSet.getInt("l.supermarket_id");
@@ -187,5 +200,4 @@ public class LocationDAOImpl implements LocationDAO {
         logger.info("Finalizacion de getLocationById");
         return location;
     }
-
 }

@@ -55,6 +55,4 @@
     <input type="hidden" name="action" value="${location != null ? 'update' : 'insert'}">
 </form>
 
-<a href="locations"><fmt:message key="msg.locations-form.returnback" /></a>
-
 <%@ include file="footer.jsp" %>

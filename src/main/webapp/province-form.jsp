@@ -44,6 +44,5 @@
 </form>
 
 
-<a href="provinces"><fmt:message key="msg.province-form.returnback" /></a>
 
 <%@ include file="footer.jsp" %>

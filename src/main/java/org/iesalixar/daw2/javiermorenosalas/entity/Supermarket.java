@@ -12,6 +12,11 @@ public class Supermarket {
     private int id;
     private String name;
 
+    /**
+     * Constructor que permite crear una instancia de Supermarket sin el ID.
+     *
+     * @param name Nombre del supermercado.
+     */
     public Supermarket(String name) {
         this.name = name;
     }
