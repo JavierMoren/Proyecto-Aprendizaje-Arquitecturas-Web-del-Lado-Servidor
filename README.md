@@ -2,7 +2,7 @@
 # DWSE Ticket Logger Servlet
 
 Este es un proyecto básico de arquitectura web en entorno servidor, desarrollado como parte del aprendizaje en el módulo de Desarrollo Web en Entorno Servidor (DWESE) del ciclo formativo 
-de Desarrollo de Aplicaciones Web (DAW). El proyecto permite ver y manejar una base de datos relacionada con la gestión de lLocalizaciones, supermercados, provincias y regiones.
+de Desarrollo de Aplicaciones Web (DAW). El proyecto permite ver y manejar una base de datos relacionada con la gestión de Localizaciones, supermercados, provincias y regiones.
 
 ## Características del Proyecto
 
